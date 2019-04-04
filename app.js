@@ -25,7 +25,7 @@ bot.on('message',(msg)=>{
                 "keyboard":[["linkedin"],["site pessoal"],["Github"]]}
         });
     }else{
-        bot.sendMessage(msg.chat.id,'Você digitou: '+ msg.from.text,{
+        bot.sendMessage(msg.chat.id,'Você digitou: '+ msg.text.toString(),{
             "reply_markup": {
                 "keyboard":[["linkedin"],["site pessoal"],["Github"]]}
         });
