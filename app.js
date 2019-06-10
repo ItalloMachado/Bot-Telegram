@@ -1,11 +1,19 @@
 const TelegramBot = require('node-telegram-bot-api');
+const AssistantV1 = require('watson-developer-cloud/assistant/v1');
 const TAKEN= 'xxxxxxxxx';
+const watsonAssistant = new AssistantV1({
+    version: '2018-07-10',
+    username: 'SEU USERNAME',
+    password: 'SEU PASSWORD',
+    url: 'https://gateway.watsonplatform.net/assistant/api'
+});
+
 const bot = new TelegramBot(TAKEN,{ polling:true });
-bot.on(['/start', '/hello'], (msg) => {bot.sendMessage('Welcome!')});
+bot.on(['/start', '/hello'], (msg) => {bot.sendMessage('bem vindo!! Digite algo que deseja saber sobre o Itallo ou escolha alguma das opções.')});
 bot.on('message',(msg)=>{
     console.log(msg);
     if(msg.text.toString() === '/start'){
-    bot.sendMessage(msg.chat.id,'Olá '+ msg.from.first_name+', bem vindo!!',{
+    bot.sendMessage(msg.chat.id,'Olá '+ msg.from.first_name+', bem vindo!! Digite algo que deseja saber sobre o Itallo ou escolha alguma das opções.',{
         "reply_markup": {
             "keyboard":[["linkedin"],["site pessoal"],["Github"]]}
     });
@@ -25,9 +33,19 @@ bot.on('message',(msg)=>{
                 "keyboard":[["linkedin"],["site pessoal"],["Github"]]}
         });
     }else{
-        bot.sendMessage(msg.chat.id,'Você digitou: '+ msg.text.toString(),{
-            "reply_markup": {
-                "keyboard":[["linkedin"],["site pessoal"],["Github"]]}
-        });
+        var text_send='há um erro';
+        service.message({
+            workspace_id: 'workspace_id',
+            input: {'text': msg.text.toString()}
+            })
+            .then(res => {
+                //text_send = JSON.stringify(res.output.text,null, 2);
+                text_send =res.output.text.toString();
+              bot.sendMessage(msg.chat.id,text_send);
+            })
+            .catch(err => {
+              console.log(err)
+              bot.sendMessage(msg.chat.id,text_send);
+            });
     }
 });
